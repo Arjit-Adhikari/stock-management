@@ -1,0 +1,322 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Management - Dashboard</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-icon">S</div>
+            <h2>Stock Manager</h2>
+        </div>
+
+        <nav>
+            <a href="/dashboard.html" class="active">Dashboard</a>
+            <a href="#" id="productsLink">Products</a>
+            <a href="#" id="categoriesLink">Categories</a>
+            <a href="#stockMovementSection" id="stockMovementLink">Stock Movement</a>
+            
+            <a href="#dailyActivitySection" id="activityLink">Daily Activity</a>
+            
+            <a href="#" id="userManagementLink">User Management</a>
+        </nav>
+
+        <button id="logoutButton" class="logout-button">Logout</button>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="topbar">
+            <div>
+                <h1>Dashboard</h1>
+                <p>Welcome to your Stock Management System.</p>
+            </div>
+
+            <div class="user-info">
+                <span id="username">Loading...</span>
+                <span id="userRole">User</span>
+            </div>
+        </header>
+
+        <section class="welcome-card">
+            <div><p class="eyebrow">INVENTORY OVERVIEW</p><h2>Welcome back!</h2><p>Keep your stock accurate. Record purchases and sales as they happen.</p></div>
+            <a class="welcome-action" href="#stockMovementSection">＋ Record stock</a>
+        </section>
+
+        <section class="stats-grid">
+            <div class="stat-card">
+                <p>Total Products</p>
+                <h2 id="totalProductsStat">0</h2>
+                <span>Products registered</span>
+            </div>
+
+            <div class="stat-card">
+                <p>Total Categories</p>
+                <h2 id="totalCategoriesStat">0</h2>
+                <span>Categories created</span>
+            </div>
+
+            <div class="stat-card">
+                <p>Low Stock Items</p>
+                <h2 id="lowStockStat">0</h2>
+                <span>Items needing attention</span>
+            </div>
+
+            <div class="stat-card">
+                <p>Stock Transactions</p>
+                <h2 id="soldTodayStat">0</h2>
+                <span>Units sold today</span>
+            </div>
+        </section>
+
+        <section class="stats-grid secondary-stats">
+            <div class="stat-card"><p>Purchased today</p><h2 id="purchasedTodayStat">0</h2><span>Units added today</span></div>
+            <div class="stat-card"><p>Transactions today</p><h2 id="transactionsTodayStat">0</h2><span>Purchase and sale entries</span></div>
+        </section>
+        <section id="stockMovementSection" class="activity-card feature-card">
+            <div class="section-heading"><div><p class="eyebrow">QUICK ACTION</p><h2>Record stock movement</h2><p>Add newly purchased stock or record items sold.</p></div></div>
+            <form id="stockMovementForm" class="movement-form">
+                <div class="form-group"><label for="movementProduct">Product</label><select id="movementProduct" required><option value="">Select a product</option></select></div>
+                <div class="form-group"><label for="movementType">Movement type</label><select id="movementType" required><option value="OUT">Sale / Stock out</option><option value="IN">Purchase / Stock in</option></select></div>
+                <div class="form-group"><label for="movementQuantity">Quantity</label><input type="number" id="movementQuantity" min="0.001" step="0.001" placeholder="e.g. 5" required></div>
+                <div class="form-group"><label for="movementNotes">Note (optional)</label><input type="text" id="movementNotes" maxlength="500" placeholder="Invoice, customer or reason"></div>
+                <button type="submit" id="movementSubmit">Record movement</button>
+                <p id="movementMessage" class="message movement-message" aria-live="polite"></p>
+            </form>
+        </section>
+        <section id="dailyActivitySection" class="activity-card activity-section">
+            <div class="section-heading"><div><h2>Recent stock activity</h2><p>Latest purchase and sales entries.</p></div><button type="button" class="secondary-button" id="refreshActivity">Refresh</button></div>
+            <div class="table-wrap"><table class="activity-table"><thead><tr><th>Product</th><th>Type</th><th>Quantity</th><th>Recorded by</th><th>Date & time</th></tr></thead><tbody id="recentTransactionsBody"><tr><td colspan="5">Loading activity…</td></tr></tbody></table></div>
+        </section>
+        <section id="categoriesSection" class="activity-card" style="margin-top: 25px;">
+    <h2>Categories & Subcategories</h2>
+    <p>Manage your inventory categories.</p>
+
+    <form id="categoryForm" style="margin-top: 20px; max-width: 450px;">
+        <div class="form-group">
+            <label for="categoryName">Category Name</label>
+            <input type="text" id="categoryName"
+                placeholder="Enter category name" required>
+        </div>
+
+        <button type="submit">Add Category</button>
+        <p id="categoryMessage" class="message"></p>
+    </form>
+
+    <div id="categoriesList" style="margin-top: 25px;">
+        Loading categories...
+    </div>
+</section>
+
+
+<!-- PRODUCTS MANAGEMENT -->
+<section id="productsSection" class="activity-card" style="margin-top:25px;">
+
+    <h2>Product Management</h2>
+    <p>Add and manage your inventory items.</p>
+
+    <form id="productForm" style="margin-top:20px; max-width:500px;">
+
+        <div class="form-group">
+            <label>Product Name</label>
+            <input type="text" id="productName"
+                placeholder="Enter product name" required>
+        </div>
+
+        <div class="form-group">
+            <label>Category</label>
+            <select id="productCategory" required>
+                <option value="">Select Category</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Subcategory</label>
+            <select id="productSubcategory">
+                <option value="">Select Subcategory</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Base Unit</label>
+            <select id="productUnit" required>
+                <option value="">Select Unit</option>
+                <option value="PCS">PCS</option>
+                <option value="BOX">BOX</option>
+                <option value="PACKET">PACKET</option>
+                <option value="BOTTLE">BOTTLE</option>
+                <option value="KG">KG</option>
+                <option value="GRAM">GRAM</option>
+                <option value="LITRE">LITRE</option>
+                <option value="ML">ML</option>
+                <option value="DOZEN">DOZEN</option>
+                <option value="SET">SET</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Opening Stock</label>
+            <input type="number" id="openingStock"
+                min="0" step="0.001" value="0" required>
+        </div>
+
+        <div class="form-group">
+            <label>Minimum Stock Alert</label>
+            <input type="number" id="minimumStock"
+                min="0" step="0.001" value="0" required>
+        </div>
+
+        <div class="form-group">
+            <label>Purchase Price</label>
+            <input type="number" id="purchasePrice"
+                min="0" step="0.01" value="0" required>
+        </div>
+
+        <div class="form-group">
+            <label>Selling Price (Optional)</label>
+            <input type="number" id="sellingPrice"
+                min="0" step="0.01" value="0" required>
+        </div>
+
+        <p id="productMessage" class="message"></p>
+
+        <button type="submit" id="saveProductButton">
+            Add Product
+        </button>
+
+    </form>
+
+    <hr style="margin:30px 0;">
+
+    <div style="display:flex; flex-wrap:wrap; gap:10px;
+                align-items:center; justify-content:space-between;">
+
+        <h3>Product List</h3>
+
+        <button type="button" id="printAllStockButton">
+            Print All Stock
+        </button>
+    </div>
+
+    <div style="margin-top:15px;">
+        <label>Filter by Category</label>
+        <select id="stockCategoryFilter">
+            <option value="">All Categories</option>
+        </select>
+    </div>
+
+    <div style="margin-top:15px;">
+        <input type="search" id="productSearch"
+            placeholder="Search products...">
+    </div>
+
+    <div style="overflow-x:auto; margin-top:20px;">
+        <table id="productsTable"
+            style="width:100%; min-width:700px; border-collapse:collapse;">
+
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Category</th>
+                    <th>Subcategory</th>
+                    <th>Unit</th>
+                    <th>Current Stock</th>
+                    <th>Minimum Stock</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody id="productsTableBody">
+                <tr>
+                    <td colspan="6">Loading products...</td>
+                </tr>
+            </tbody>
+
+        </table>
+    </div>
+
+    <button type="button" id="printFilteredStockButton"
+        style="margin-top:20px;">
+        Print Category Stock
+    </button>
+
+</section>
+<!-- END PRODUCTS MANAGEMENT -->
+
+
+        <!-- USER MANAGEMENT -->
+        <section id="userManagementSection" class="activity-card" style="margin-top: 25px;">
+
+            <h2>User Management</h2>
+            <p>Create and manage staff accounts.</p>
+
+            <form id="createStaffForm" style="margin-top: 20px; max-width: 450px;">
+
+                <div class="form-group">
+                    <label for="staffUsername">Staff Username</label>
+                    <input
+                        type="text"
+                        id="staffUsername"
+                        placeholder="Enter staff username"
+                        minlength="3"
+                        maxlength="30"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="staffPassword">Staff Password</label>
+                    <input
+                        type="password"
+                        id="staffPassword"
+                        placeholder="Minimum 12 characters"
+                        minlength="12"
+                        required
+                    >
+                </div>
+
+                <p id="staffMessage" class="message"></p>
+
+                <button type="submit" id="createStaffButton">
+                    Create Staff Account
+                </button>
+
+            </form>
+
+            <div style="margin-top: 30px;">
+                <h3>Registered Users</h3>
+
+                <div style="overflow-x: auto; margin-top: 15px;">
+                    <table id="usersTable" style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr>
+                                <th style="text-align: left; padding: 12px;">Username</th>
+                                <th style="text-align: left; padding: 12px;">Role</th>
+                                <th style="text-align: left; padding: 12px;">Status</th>
+                                <th style="text-align: left; padding: 12px;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <tr>
+                                <td colspan="4" style="padding: 12px;">
+                                    Loading users...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+
+
+    </main>
+
+    <script src="/js/dashboard.js"></script>
+</body>
+</html>
